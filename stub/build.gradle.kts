@@ -39,13 +39,20 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().all {
     }
 }
 
+val grpcBin : String? = System.getenv("PROTOC_GRPC_BIN")
+
 project.protobuf {
     protoc {
         artifact = "com.google.protobuf:protoc:$protobufVersion"
     }
     plugins {
         id("grpc") {
-            artifact = "io.grpc:protoc-gen-grpc-java:$grpcVersion"
+	    if(grpcBin == null) {
+                artifact = "io.grpc:protoc-gen-grpc-java:$grpcVersion"
+	    }
+	    else {
+	        path = grpcBin
+	    }
         }
         id("grpckt") {
             artifact = "io.grpc:protoc-gen-grpc-kotlin:$grpcKotlinVersion:jdk8@jar"
